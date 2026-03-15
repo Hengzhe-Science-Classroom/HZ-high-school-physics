@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High School Physics · Interactive</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <button id="sidebar-toggle" aria-label="Toggle sidebar">&#9776;</button>
+        <aside id="sidebar">
+            <div id="sidebar-header">
+                <h1>High School Physics</h1>
+                <p class="author">Chinese National Curriculum (Ren Jiao Ban)</p>
+                <div id="progress-container">
+                    <div id="progress-bar"><div id="progress-fill"></div></div>
+                    <span id="progress-text">0%</span>
+                </div>
+            </div>
+            <div id="search-container">
+                <input type="text" id="search-input" placeholder="Search topics...">
+            </div>
+            <nav id="chapter-nav"></nav>
+            <div id="sidebar-footer"><p class="copyright-notice" style="font-size:0.7rem;color:#888;margin-top:12px;text-align:center;">&copy; 2026 Hengzhe Zhao · AGPL-3.0 &amp; Commercial</p>
+                <button id="reset-progress">Reset Progress</button>
+            </div>
+        </aside>
+        <main id="main-content">
+            <div id="welcome-screen">
+                <div class="welcome-hero">
+                    <h1>High School Physics</h1>
+                    <h2>An Interactive Journey from Motion to Modern Physics</h2>
+                    <p class="welcome-description">
+                        Explore physics through vivid visualizations and hands-on simulations.
+                        From kinematics to nuclear physics, discover how the laws of nature shape our universe!
+                    </p>
+                </div>
+                <div class="roadmap">
+                    <h3>What You'll Explore</h3>
+                    <div class="roadmap-parts">
+                        <div class="roadmap-part">
+                            <h4>Part A: Kinematics</h4>
+                            <ul>
+                                <li>Ch 0: Describing Motion</li>
+                                <li>Ch 1: Uniformly Accelerated Motion</li>
+                                <li>Ch 2: Projectile Motion</li>
+                                <li>Ch 3: Circular Motion</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-part">
+                            <h4>Part B: Mechanics</h4>
+                            <ul>
+                                <li>Ch 4: Forces</li>
+                                <li>Ch 5: Newton's Laws</li>
+                                <li>Ch 6: Gravitation</li>
+                                <li>Ch 7: Momentum</li>
+                                <li>Ch 8: Mechanical Energy</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-part">
+                            <h4>Part C: Electromagnetism</h4>
+                            <ul>
+                                <li>Ch 9: Electrostatics</li>
+                                <li>Ch 10: DC Circuits</li>
+                                <li>Ch 11: Magnetic Fields</li>
+                                <li>Ch 12: Electromagnetic Induction</li>
+                                <li>Ch 13: Alternating Current</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-part">
+                            <h4>Part D: Waves & Optics</h4>
+                            <ul>
+                                <li>Ch 14: Oscillations</li>
+                                <li>Ch 15: Waves</li>
+                                <li>Ch 16: Optics</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-part">
+                            <h4>Part E: Thermodynamics</h4>
+                            <ul>
+                                <li>Ch 17: Kinetic Theory</li>
+                                <li>Ch 18: Gas Laws & Thermodynamics</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-part">
+                            <h4>Part F: Modern Physics</h4>
+                            <ul>
+                                <li>Ch 19: Atomic Structure</li>
+                                <li>Ch 20: Nuclear Physics</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <p class="welcome-start">Select a chapter from the sidebar to begin your journey!</p>
+            </div>
+            <div id="chapter-content" style="display:none;">
+                <div id="chapter-header">
+                    <div id="chapter-number-badge"></div>
+                    <h1 id="chapter-title"></h1>
+                    <p id="chapter-subtitle"></p>
+                </div>
+                <div id="section-tabs"></div>
+                <article id="section-content"></article>
+                <div id="exercises-panel" style="display:none;">
+                    <h3>Practice Time!</h3>
+                    <div id="exercises-list"></div>
+                </div>
+                <div id="chapter-nav-buttons">
+                    <button id="prev-btn" disabled>&larr; Previous</button>
+                    <span id="section-indicator"></span>
+                    <button id="next-btn">Next &rarr;</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script src="viz-engine.js"></script>
+
+    <!-- Chapter manifest for lazy loading -->
+    <script>
+    window.CHAPTER_MANIFEST = [
+        {number:0,  id:'ch00', title:'Describing Motion',              file:'ch00-describing-motion'},
+        {number:1,  id:'ch01', title:'Uniformly Accelerated Motion',   file:'ch01-uniform-acceleration'},
+        {number:2,  id:'ch02', title:'Projectile Motion',             file:'ch02-projectile-motion'},
+        {number:3,  id:'ch03', title:'Circular Motion',               file:'ch03-circular-motion'},
+        {number:4,  id:'ch04', title:'Forces',                        file:'ch04-forces'},
+        {number:5,  id:'ch05', title:'Newton\'s Laws',                file:'ch05-newtons-laws'},
+        {number:6,  id:'ch06', title:'Gravitation',                   file:'ch06-gravitation'},
+        {number:7,  id:'ch07', title:'Momentum',                      file:'ch07-momentum'},
+        {number:8,  id:'ch08', title:'Mechanical Energy',             file:'ch08-mechanical-energy'},
+        {number:9,  id:'ch09', title:'Electrostatics',                file:'ch09-electrostatics'},
+        {number:10, id:'ch10', title:'DC Circuits',                   file:'ch10-dc-circuits'},
+        {number:11, id:'ch11', title:'Magnetic Fields',               file:'ch11-magnetic-fields'},
+        {number:12, id:'ch12', title:'Electromagnetic Induction',     file:'ch12-em-induction'},
+        {number:13, id:'ch13', title:'Alternating Current',           file:'ch13-alternating-current'},
+        {number:14, id:'ch14', title:'Oscillations',                  file:'ch14-oscillations'},
+        {number:15, id:'ch15', title:'Waves',                         file:'ch15-waves'},
+        {number:16, id:'ch16', title:'Optics',                        file:'ch16-optics'},
+        {number:17, id:'ch17', title:'Kinetic Theory',                file:'ch17-kinetic-theory'},
+        {number:18, id:'ch18', title:'Gas Laws & Thermodynamics',     file:'ch18-gas-laws'},
+        {number:19, id:'ch19', title:'Atomic Structure',              file:'ch19-atomic-structure'},
+        {number:20, id:'ch20', title:'Nuclear Physics',               file:'ch20-nuclear-physics'}
+    ];
+    </script>
+
+    <script src="app.js"></script>
+</body>
+</html>
